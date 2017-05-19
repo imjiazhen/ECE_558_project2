@@ -57,6 +57,9 @@ public class ResultsActivity extends Activity {
         mButtonHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View v) {
+                Intent i = new Intent(ResultsActivity.this, HomeActivity.class);
+                startActivity(i);
+                finish();
             } // onClick
         }); // onClickListener -- mButtonHome
 

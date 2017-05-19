@@ -27,6 +27,10 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     private static final String KEY_QUIZ_SCORE = "QuizScore";
     private static final String KEY_IS_CHEATER = "IsCheater";
 
+    // extra data being passed from QuizActivity --> CheatActivity & ResultsActivity
+    private static final int ACTIVITY_CHEAT = 8;
+    private static final int ACTIVITY_RESULTS = 9;
+
     // GUI elements
     private TextView mTextViewQuestion;
     private RadioButton mRadioButtonA;
@@ -165,7 +169,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
                     Intent i = new Intent(QuizActivity.this, ResultsActivity.class);
                     double QuizPercentage = (mQuizScore / ((double)(mQuizItemArray.length))*100.00);
                     i.putExtra(ResultsActivity.EXTRA_QUIZ_PERCENT, QuizPercentage);
-                    startActivity(i);
+                    startActivityForResult(i, ACTIVITY_RESULTS);
                 }
                 else {
                     mCurrentIndex = (mCurrentIndex + 1);
@@ -187,7 +191,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
                 Intent i = new Intent(QuizActivity.this, CheatActivity.class);
                 char correctAnswer = mQuizItemArray[mCurrentIndex].getQuizItemAnswer();
                 i.putExtra(CheatActivity.EXTRA_ANSWER_CHARACTER, correctAnswer);
-                startActivityForResult(i, 0);
+                startActivityForResult(i, ACTIVITY_CHEAT);
             } // onClick
 
         }); // onClickListener -- mButtonCheat
@@ -226,9 +230,15 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     // check if cheat answer was shown or not
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data == null) return;
-        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
-    }
+        if (requestCode == ACTIVITY_CHEAT) {
+            if (data == null) return;
+            else mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+        }
+        else if (requestCode == ACTIVITY_RESULTS) {
+            setResult(RESULT_OK, null);
+            finish();
+        }
+    } // onActivityResult
 
     /////////////////////////
     // onSaveInstanceState //

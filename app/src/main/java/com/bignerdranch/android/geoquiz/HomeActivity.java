@@ -25,6 +25,7 @@ public class HomeActivity extends Activity {
     // key-value pairs to stash when activity is interrupted
 
     // extra data being passed from HomeActivity --> QuizActivity
+    private static final int ACTIVITY_QUIZ = 7;
 
     // GUI elements
     private Spinner mSpinnerQuizzes;
@@ -53,11 +54,23 @@ public class HomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.this, QuizActivity.class);
-                startActivity(i);
+                startActivityForResult(i, ACTIVITY_QUIZ);
             } // onClick
 
         }); // onClickListener -- mButtonStart
 
     } // onCreate
+
+    //////////////////////
+    // onActivityResult //
+    //////////////////////
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ACTIVITY_QUIZ) {
+            if (resultCode == RESULT_OK) {
+                this.finish();
+            }
+        }
+    } // onActivityResult
 
 } // HomeActivity
