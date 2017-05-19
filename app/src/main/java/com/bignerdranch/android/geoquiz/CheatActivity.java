@@ -30,7 +30,8 @@ public class CheatActivity extends Activity {
     
     // Class attributes
     private char mAnswerCharacter;
-    
+    private boolean mIsAnswerShown;
+
     //////////////
     // onCreate //
     //////////////
@@ -43,13 +44,14 @@ public class CheatActivity extends Activity {
         setContentView(R.layout.activity_cheat);
 
         // get the answer character from QuizActivity through Intent's extra
+        // also get whether the answer was shown
         mAnswerCharacter = getIntent().getCharExtra(EXTRA_ANSWER_CHARACTER, 'X');
+        mIsAnswerShown = getIntent().getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
+
+        setAnswerShownResult();
 
         // grab the TextView object for use by CheatActivity
         mTextViewAnswer = (TextView) findViewById(R.id.text_answer);
-
-        // clear the answer shown flag for Intent result
-        setAnswerShownResult(false);
 
         // wire up the 'Show Answer' button
         mButtonShowAnswer = (Button) findViewById(R.id.button_answer);
@@ -58,10 +60,11 @@ public class CheatActivity extends Activity {
             public void onClick(View v) {
 
                 mTextViewAnswer.setText(String.valueOf(mAnswerCharacter));
-                setAnswerShownResult(true);
+                mIsAnswerShown = true;
+                setAnswerShownResult();
 
             } // onClick
-        }); // onClickListener
+        }); // onClickListener -- mButtonShowAnswer
 
     } // onCreate
 
@@ -69,9 +72,10 @@ public class CheatActivity extends Activity {
     // setAnswerShownResult //
     //////////////////////////
 
-    private void setAnswerShownResult(boolean isAnswerShown) {
+    private void setAnswerShownResult() {
+        // TODO: need to implement long lasting Cheat status
         Intent data = new Intent();
-        data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
+        data.putExtra(EXTRA_ANSWER_SHOWN, mIsAnswerShown);
         setResult(RESULT_OK, data);
     } // setAnswerShownResult
 

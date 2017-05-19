@@ -158,7 +158,8 @@ public class QuizActivity extends Activity implements View.OnClickListener {
                 if (mCurrentIndex == (mQuizItemArray.length - 1)) {
                     // TODO: Jump to results page
                     Intent i = new Intent(QuizActivity.this, ResultsActivity.class);
-                    i.putExtra(ResultsActivity.EXTRA_QUIZ_SCORE, mQuizScore);
+                    double QuizPercentage = (mQuizScore / ((double)(mQuizItemArray.length))*100.00);
+                    i.putExtra(ResultsActivity.EXTRA_QUIZ_PERCENT, QuizPercentage);
                     startActivity(i);
                 }
                 else {
@@ -168,7 +169,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
                 }
 
             } // onClick
-        }); // onClickListener
+        }); // onClickListener -- mButtonNext
 
         // wire up the Cheat button
         // with anonymous inner class
@@ -182,7 +183,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
                 i.putExtra(CheatActivity.EXTRA_ANSWER_CHARACTER, correctAnswer);
                 startActivityForResult(i, 0);
             } // onClick
-        }); // onClickListener
+        }); // onClickListener -- mButtonCheat
 
     } // onCreate
 
@@ -209,7 +210,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
         checkAnswer();
 
-    }
+    } // onClick -- mRadioButton(A,B,C,D)
 
     //////////////////////
     // onActivityResult //
