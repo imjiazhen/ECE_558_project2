@@ -1,3 +1,10 @@
+// TODO : need to handle landscape changes
+// TODO : prevent questions from being answered again
+// TODO : JSON parser on a single item
+// TODO : Persistent storage
+// TODO : Combine JSON parser & persistent storage
+// TODO : Merge JSON parser & persistent storage into Quiz
+
 package com.bignerdranch.android.geoquiz;
 
 import android.app.Activity;
@@ -98,7 +105,6 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         }
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
-        // TODO : limit the question from being answered again
 
     } // checkAnswer
 
@@ -156,7 +162,6 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             public void onClick(View v) {
 
                 if (mCurrentIndex == (mQuizItemArray.length - 1)) {
-                    // TODO: Jump to results page
                     Intent i = new Intent(QuizActivity.this, ResultsActivity.class);
                     double QuizPercentage = (mQuizScore / ((double)(mQuizItemArray.length))*100.00);
                     i.putExtra(ResultsActivity.EXTRA_QUIZ_PERCENT, QuizPercentage);
@@ -176,6 +181,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
         mButtonCheat = (Button) findViewById(R.id.button_cheat);
         mButtonCheat.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(QuizActivity.this, CheatActivity.class);
@@ -183,6 +189,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
                 i.putExtra(CheatActivity.EXTRA_ANSWER_CHARACTER, correctAnswer);
                 startActivityForResult(i, 0);
             } // onClick
+
         }); // onClickListener -- mButtonCheat
 
     } // onCreate

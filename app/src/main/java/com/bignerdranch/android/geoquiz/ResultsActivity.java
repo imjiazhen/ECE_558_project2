@@ -1,3 +1,6 @@
+// TODO : return back to HomeActivity
+// TODO : need to handle landscape changes
+
 package com.bignerdranch.android.geoquiz;
 
 import android.app.Activity;
@@ -54,7 +57,6 @@ public class ResultsActivity extends Activity {
         mButtonHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View v) {
-                // TODO : jump back to HomeActivity
             } // onClick
         }); // onClickListener -- mButtonHome
 

@@ -1,3 +1,6 @@
+// TODO : need to handle landscape changes
+// TODO : need to pass QuizActivity the state (score, cheat status, etc.)
+
 package com.bignerdranch.android.geoquiz;
 
 import android.app.Activity;
@@ -18,8 +21,7 @@ public class CheatActivity extends Activity {
     private static final String TAG = "CheatActivity";
 
     // key-value pairs to stash when activity is interrupted
-    // TODO : define KEY attribute to store data in CheatActivity
-    
+
     // extra data being passed from QuizActivity --> CheatActivity
     public static final String EXTRA_ANSWER_CHARACTER = "com.bignerdranch.android.geoquiz.answer_character";
     public static final String EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown";
@@ -73,7 +75,6 @@ public class CheatActivity extends Activity {
     //////////////////////////
 
     private void setAnswerShownResult() {
-        // TODO: need to implement long lasting Cheat status
         Intent data = new Intent();
         data.putExtra(EXTRA_ANSWER_SHOWN, mIsAnswerShown);
         setResult(RESULT_OK, data);
