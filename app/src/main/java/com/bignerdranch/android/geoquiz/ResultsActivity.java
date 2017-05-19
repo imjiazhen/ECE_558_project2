@@ -47,8 +47,7 @@ public class ResultsActivity extends Activity {
         // grab the TextView object for use by ActivityResults
         // then display score
         mTextViewScore = (TextView) findViewById(R.id.text_score);
-        String str = "" + mQuizScore + "%";
-        mTextViewScore.setText(str);
+        updateTextScore();
 
         // wire up the 'Home' button
         mButtonHome = (Button) findViewById(R.id.button_home);
@@ -60,5 +59,14 @@ public class ResultsActivity extends Activity {
         }); // onClickListener -- mButtonHome
 
     } // onCreate
+
+    /////////////////////
+    // updateTextScore //
+    /////////////////////
+
+    private void updateTextScore() {
+        String str = "" + mQuizScore + "%";
+        mTextViewScore.setText(str);
+    }
 
 } // ResultsActivity

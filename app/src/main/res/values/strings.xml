@@ -5,6 +5,19 @@
     <string name="app_name">GeoQuiz</string>
 
     <!--                    -->
+    <!--HomeActivity strings-->
+    <!--                    -->
+
+    <string name="text_welcome">Welcome to</string>
+    <string name="text_select_quiz">Select Quiz:</string>
+
+    <string-array name="array_quizzes">
+        <item>lorem ipsum spinner item</item>
+    </string-array>
+
+    <string name="button_start">Start</string>
+
+    <!--                    -->
     <!--QuizActivity strings-->
     <!--                    -->
 
