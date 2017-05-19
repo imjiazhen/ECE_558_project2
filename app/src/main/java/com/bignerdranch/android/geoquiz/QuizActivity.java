@@ -12,19 +12,29 @@ import android.content.Intent;
 
 public class QuizActivity extends Activity implements View.OnClickListener {
 
+    // tag for debug printing & identification
     private static final String TAG = "QuizActivity";
+    
+    // key-value pairs to stash when activity is interrupted
     private static final String KEY_INDEX = "index";
+    private static final String KEY_QUIZ_SCORE = "QuizScore";
+    private static final String KEY_IS_CHEATER = "IsCheater";
 
+    // GUI elements
+    private TextView mTextViewQuestion;
     private RadioButton mRadioButtonA;
     private RadioButton mRadioButtonB;
     private RadioButton mRadioButtonC;
     private RadioButton mRadioButtonD;
+    private Button mButtonNext;
+    private Button mButtonCheat;
 
-    private Button mNextButton;
-    private Button mCheatButton;
+    // Class attributes
+    private int     mCurrentIndex = 0;
+    private double  mQuizScore = 0.00;
+    private boolean mIsCheater = false;
 
-    private TextView mQuestionTextView;
-
+    // temporary QuizItem data
     String[][]  QuizChoices = { {"A: Chien", "B: Pero", "C: Inu", "D: Hund"},
                                 {"A: Chat", "B: Gato", "C: Neko", "D: Catze"},
                                 {"A: Poisson", "B: Sakana", "C: Fisch", "D: Peces"},
@@ -39,10 +49,6 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             new QuizItem("What is the Japanese word for bird?", QuizChoices[4], 'D')
     };
 
-    private int mCurrentIndex = 0;
-
-    private boolean mIsCheater;
-
     ////////////////////
     // updateQuestion //
     ////////////////////
@@ -52,7 +58,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         QuizItem question = mQuizItemArray[mCurrentIndex];
         String question_text = question.toString();
 
-        mQuestionTextView.setText(question_text);
+        mTextViewQuestion.setText(question_text);
 
         String choice_A = question.getQuizItemChoices()[0];
         mRadioButtonA.setText(choice_A);
@@ -78,19 +84,22 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         int messageResId = 0;
 
         if (mIsCheater) {
-            messageResId = R.string.judgement_toast;
+            messageResId = R.string.toast_cheat;
         }
 
         else {
             if (answerCorrect) {
-                messageResId = R.string.correct_toast;
+                messageResId = R.string.toast_correct;
+                mQuizScore = mQuizScore + 1;
             }
             else {
-                messageResId = R.string.incorrect_toast;
+                messageResId = R.string.toast_incorect;
             }
         }
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+        // TODO : limit the question from being answered again
+
     } // checkAnswer
 
     //////////////
@@ -108,11 +117,14 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         // wire up the TextView layout object
         // grab Question resource ID and set TextView to that
 
-        mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        mTextViewQuestion = (TextView) findViewById(R.id.text_question);
 
         // restore previous question index if available
+        // also restore quiz score & cheat status
         if(savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
+            mQuizScore = savedInstanceState.getDouble(KEY_QUIZ_SCORE, 0.0);
         }
 
         // wire up Radio Button A
@@ -138,21 +150,31 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         // wire up the Next button
         // with anonymous inner class
 
-        mNextButton = (Button) findViewById(R.id.next_button);
-        mNextButton.setOnClickListener(new View.OnClickListener() {
+        mButtonNext = (Button) findViewById(R.id.button_next);
+        mButtonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuizItemArray.length;
-                mIsCheater = false;
-                updateQuestion();
+
+                if (mCurrentIndex == (mQuizItemArray.length - 1)) {
+                    // TODO: Jump to results page
+                    Intent i = new Intent(QuizActivity.this, ResultsActivity.class);
+                    i.putExtra(ResultsActivity.EXTRA_QUIZ_SCORE, mQuizScore);
+                    startActivity(i);
+                }
+                else {
+                    mCurrentIndex = (mCurrentIndex + 1);
+                    mIsCheater = false;
+                    updateQuestion();
+                }
+
             } // onClick
         }); // onClickListener
 
         // wire up the Cheat button
         // with anonymous inner class
 
-        mCheatButton = (Button) findViewById(R.id.cheat_button);
-        mCheatButton.setOnClickListener(new View.OnClickListener() {
+        mButtonCheat = (Button) findViewById(R.id.button_cheat);
+        mButtonCheat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(QuizActivity.this, CheatActivity.class);
@@ -186,6 +208,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         }
 
         checkAnswer();
+
     }
 
     //////////////////////
@@ -204,12 +227,18 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     /////////////////////////
 
     // save index of current question
+    // along with score & cheat status
     @Override
     public void onSaveInstanceState (Bundle savedInstanceState) {
+
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
+
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-    } //
+        savedInstanceState.putBoolean(KEY_IS_CHEATER, mIsCheater);
+        savedInstanceState.putDouble(KEY_QUIZ_SCORE, mQuizScore);
+
+    } // onSaveInstanceState
 
     /////////////
     // onStart //

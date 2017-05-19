@@ -7,8 +7,8 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/question_text_view"
-        android:text="@string/question_lorem"
+        android:id="@+id/text_question"
+        android:text="@string/lorem_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="24dp" />
@@ -26,42 +26,42 @@
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
                          android:padding="12dp"
-                         android:text="@string/radio_lorem_A" />
+                         android:text="@string/lorem_radio_A" />
 
             <RadioButton android:id="@+id/radio_B"
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
                          android:padding="12dp"
-                         android:text="@string/radio_lorem_B" />
+                         android:text="@string/lorem_radio_B" />
 
             <RadioButton android:id="@+id/radio_C"
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
                          android:padding="12dp"
-                         android:text="@string/radio_lorem_C" />
+                         android:text="@string/lorem_radio_C" />
 
             <RadioButton android:id="@+id/radio_D"
                          android:layout_width="wrap_content"
                          android:layout_height="wrap_content"
                          android:padding="12dp"
-                         android:text="@string/radio_lorem_D" />
+                         android:text="@string/lorem_radio_D" />
         </RadioGroup>
 
     </LinearLayout>
 
     <Button
-        android:id="@+id/cheat_button"
+        android:id="@+id/button_cheat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/cheat_button" />
+        android:text="@string/button_cheat" />
 
     <Button
-        android:id="@+id/next_button"
+        android:id="@+id/button_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/next_button"
+        android:text="@string/button_next"
         android:drawableRight="@mipmap/arrow_right"
         android:drawablePadding="4dp" />
 

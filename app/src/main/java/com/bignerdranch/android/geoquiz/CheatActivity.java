@@ -14,15 +14,23 @@ import android.content.Intent;
 
 public class CheatActivity extends Activity {
 
+    // tag for debug printing & identification
     private static final String TAG = "CheatActivity";
+
+    // key-value pairs to stash when activity is interrupted
+    // TODO : define KEY attribute to store data in CheatActivity
+    
+    // extra data being passed from QuizActivity --> CheatActivity
     public static final String EXTRA_ANSWER_CHARACTER = "com.bignerdranch.android.geoquiz.answer_character";
     public static final String EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown";
 
+    // GUI elements
+    private TextView mTextViewAnswer;
+    private Button mButtonShowAnswer;
+    
+    // Class attributes
     private char mAnswerCharacter;
-
-    private TextView mAnswerTextView;
-    private Button mShowAnswer;
-
+    
     //////////////
     // onCreate //
     //////////////
@@ -34,20 +42,24 @@ public class CheatActivity extends Activity {
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_cheat);
 
-        mAnswerCharacter = getIntent().getCharExtra(EXTRA_ANSWER_CHARACTER, 'x');
+        // get the answer character from QuizActivity through Intent's extra
+        mAnswerCharacter = getIntent().getCharExtra(EXTRA_ANSWER_CHARACTER, 'X');
 
-        mAnswerTextView = (TextView) findViewById(R.id.answerTextView);
+        // grab the TextView object for use by CheatActivity
+        mTextViewAnswer = (TextView) findViewById(R.id.text_answer);
 
+        // clear the answer shown flag for Intent result
         setAnswerShownResult(false);
 
         // wire up the 'Show Answer' button
-        mShowAnswer = (Button) findViewById(R.id.showAnswerButton);
-        mShowAnswer.setOnClickListener(new View.OnClickListener() {
+        mButtonShowAnswer = (Button) findViewById(R.id.button_answer);
+        mButtonShowAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                mAnswerTextView.setText(String.valueOf(mAnswerCharacter));
+                mTextViewAnswer.setText(String.valueOf(mAnswerCharacter));
                 setAnswerShownResult(true);
+
             } // onClick
         }); // onClickListener
 

@@ -8,17 +8,17 @@
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:padding="24dp"
-              android:text="@string/warning_text" />
+              android:text="@string/text_warning" />
 
-    <TextView android:id="@+id/answerTextView"
+    <TextView android:id="@+id/text_answer"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:padding="24dp" />
 
     <Button
-        android:id="@+id/showAnswerButton"
+        android:id="@+id/button_answer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/show_answer_button"/>
+        android:text="@string/button_answer"/>
 
 </LinearLayout>
