@@ -114,48 +114,25 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         if(savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
         }
-//        // wire up the True button
-//        // with anonymous inner class
-//
-//        mTrueButton = (Button) findViewById(R.id.true_button);
-//        mTrueButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                checkAnswer(true);
-//            } // onClick
-//        }); // onClickListener
-//
-//        // wire up the False button
-//        // with anonymous inner class
-//
-//        mFalseButton = (Button) findViewById(R.id.false_button);
-//        mFalseButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                checkAnswer(false);
-//            } // onClick
-//        }); // onClickListener
 
         // wire up Radio Button A
-
         mRadioButtonA = (RadioButton) findViewById(R.id.radio_A);
         mRadioButtonA.setOnClickListener(this);
 
         // wire up Radio Button B
-
         mRadioButtonB = (RadioButton) findViewById(R.id.radio_B);
         mRadioButtonB.setOnClickListener(this);
 
         // wire up Radio Button C
-
         mRadioButtonC = (RadioButton) findViewById(R.id.radio_C);
         mRadioButtonC.setOnClickListener(this);
 
         // wire up Radio Button D
-
         mRadioButtonD = (RadioButton) findViewById(R.id.radio_D);
         mRadioButtonD.setOnClickListener(this);
 
+        // now that all radio buttons are wired,
+        // can update the question text & radio text
         updateQuestion();
 
         // wire up the Next button
