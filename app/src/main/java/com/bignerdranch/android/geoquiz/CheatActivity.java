@@ -49,10 +49,10 @@ public class CheatActivity extends Activity {
         restoreState(savedInstanceState);
 
         // get the answer character from QuizActivity through Intent's extra
-        // also get whether the answer was shown
-        mAnswerCharacter = getIntent().getCharExtra(EXTRA_ANSWER_CHARACTER, 'X');
-        mIsAnswerShown = getIntent().getBooleanExtra(EXTRA_ANSWER_SHOWN, false);
 
+        mAnswerCharacter = getIntent().getCharExtra(EXTRA_ANSWER_CHARACTER, 'X');
+
+        // prevent someone from exiting + entering CheatActivity to clear cheat flag
         setAnswerShownResult();
 
         // grab the TextView object for use by CheatActivity
@@ -112,9 +112,11 @@ public class CheatActivity extends Activity {
     //////////////////////////
 
     private void setAnswerShownResult() {
-        Intent data = new Intent();
-        data.putExtra(EXTRA_ANSWER_SHOWN, mIsAnswerShown);
-        setResult(RESULT_OK, data);
+        if (mIsAnswerShown) {
+            Intent data = new Intent();
+            data.putExtra(EXTRA_ANSWER_SHOWN, mIsAnswerShown);
+            setResult(RESULT_OK, data);
+        }
     } // setAnswerShownResult
 
 } // CheatActivity

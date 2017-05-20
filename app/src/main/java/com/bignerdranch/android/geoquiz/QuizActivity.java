@@ -24,7 +24,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     // key-value pairs to stash when activity is interrupted
     private static final String KEY_INDEX = "CurrentIndex";
     private static final String KEY_QUIZ_SCORE = "QuizScore";
-    private static final String KEY_IS_CHEATER = "IsCheater";
+    private static final String KEY_QUIZ_ITEM_ARRAY = "QuizItemArray";
 
     // extra data being passed from QuizActivity --> CheatActivity & ResultsActivity
     private static final int ACTIVITY_CHEAT = 8;
@@ -42,7 +42,6 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     // Class attributes
     private int     mCurrentIndex = 0;
     private double  mQuizScore = 0.00;
-    private boolean mIsCheater = false;
 
     // temporary QuizItem data
     String[][]  QuizChoices = { {"A: Chien", "B: Pero", "C: Inu", "D: Hund"},
@@ -113,7 +112,6 @@ public class QuizActivity extends Activity implements View.OnClickListener {
                 }
                 else {
                     mCurrentIndex = (mCurrentIndex + 1);
-                    mIsCheater = false;
                     updateQuestion();
                 }
 
@@ -145,10 +143,13 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     // restore previous question index if available
     // also restore quiz score & cheat status
     public void restoreState(Bundle savedInstanceState) {
+
+        Log.d(TAG, "restoreState(Bundle) called");
+
         if(savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
-            mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
             mQuizScore = savedInstanceState.getDouble(KEY_QUIZ_SCORE, 0.0);
+            mQuizItemArray = (QuizItem[]) savedInstanceState.getSerializable(KEY_QUIZ_ITEM_ARRAY);
         }
     } // restoreState
 
@@ -165,8 +166,8 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         Log.i(TAG, "onSaveInstanceState");
 
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-        savedInstanceState.putBoolean(KEY_IS_CHEATER, mIsCheater);
         savedInstanceState.putDouble(KEY_QUIZ_SCORE, mQuizScore);
+        savedInstanceState.putSerializable(KEY_QUIZ_ITEM_ARRAY, mQuizItemArray);
 
     } // onSaveInstanceState
 
@@ -226,10 +227,11 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
     private void checkAnswer() {
 
-        boolean answerCorrect =  mQuizItemArray[mCurrentIndex].checkResult();
+        QuizItem question = mQuizItemArray[mCurrentIndex];
+        boolean answerCorrect = question.checkResult();
         int messageResId = 0;
 
-        if (mIsCheater) {
+        if (question.getCheatStatus()) {
             messageResId = R.string.toast_cheat;
         }
 
@@ -254,9 +256,15 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     // check if cheat answer was shown or not
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.d(TAG, "onActivityResult called");
+
         if (requestCode == ACTIVITY_CHEAT) {
             if (data == null) return;
-            else mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+            else {
+                boolean cheat_status = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+                mQuizItemArray[mCurrentIndex].setCheatStatus(cheat_status);
+            }
         }
         else if (requestCode == ACTIVITY_RESULTS) {
             if (resultCode == RESULT_OK) {

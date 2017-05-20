@@ -1,4 +1,3 @@
-// TODO : Create background image & icon
 // TODO : use Spinner to select a different quiz
 
 package com.bignerdranch.android.geoquiz;

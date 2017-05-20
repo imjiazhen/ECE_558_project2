@@ -7,10 +7,11 @@ package com.bignerdranch.android.geoquiz; /**
  * to the user, collect the response, and check for correctness.
  */
 
+import java.io.*;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class QuizItem {
+public class QuizItem implements Serializable{
 
     private char        QuizItemAnswer;
     private String      QuizItemQuestion;
@@ -18,6 +19,7 @@ public class QuizItem {
 
     private boolean     AnsweredCorrect;
     private char        UserResponse;
+    private boolean     CheatStatus;
 
     /**
      * Default constructor.  Checks the number of answer choices
@@ -82,6 +84,24 @@ public class QuizItem {
         // set boolean based on whether user's answer matches the official one
         AnsweredCorrect = (UserResponse == QuizItemAnswer) ? true : false;
         return AnsweredCorrect;
+    }
+
+    /**
+     * Method to return cheat status of the question,
+     * @return CheatStatus - whether or not the user cheated on this question
+     */
+
+    public boolean getCheatStatus() {
+        return CheatStatus;
+    }
+
+    /**
+     * Method to return cheat status of the question,
+     * @param status - whether or not the user cheated on this question
+     */
+
+    public void setCheatStatus(boolean status) {
+        CheatStatus = status;
     }
 
     /**
