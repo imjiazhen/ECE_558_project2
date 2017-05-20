@@ -9,7 +9,7 @@
               android:layout_height="wrap_content"
               android:padding="24dp"
               android:textSize="24dp"
-              android:layout_marginBottom="12dp"
+              android:layout_marginBottom="8dp"
               android:text="@string/text_congratulations" />
 
     <TextView android:layout_width="wrap_content"
@@ -29,13 +29,28 @@
               android:layout_height="wrap_content"
               android:padding="12dp"
               android:textSize="18dp"
-              android:text="@string/text_answers_correct" />
+              android:layout_marginBottom="24dp"
+              android:text="@string/text_questions_correct" />
+
+    <TextView android:id="@+id/text_total_questions"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:padding="12dp"
+              android:textSize="14dp"
+              android:text="@string/text_total_questions" />
+
+    <TextView android:id="@+id/text_cheat_total"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:padding="12dp"
+              android:textSize="14dp"
+              android:text="@string/text_cheat_questions" />
 
     <Button android:id="@+id/button_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:text="@string/button_home" />
 
 </LinearLayout>

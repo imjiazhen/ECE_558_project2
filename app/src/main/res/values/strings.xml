@@ -48,8 +48,10 @@
 
     <string name="text_congratulations">Congratulations!</string>
     <string name="text_you_got">You got</string>
-    <string name="text_score">##</string>
-    <string name="text_answers_correct">answers correct.</string>
+    <string name="text_score">%%</string>
+    <string name="text_questions_correct">of questions correct.</string>
+    <string name="text_total_questions">Total questions:\u0020</string>
+    <string name="text_cheat_questions">Questions cheated:\u0020</string>
     <string name="button_home">Home</string>
 
 </resources>

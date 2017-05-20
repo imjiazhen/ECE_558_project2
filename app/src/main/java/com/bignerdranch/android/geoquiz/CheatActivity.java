@@ -1,6 +1,3 @@
-// TODO : need to handle landscape changes
-// TODO : need to pass QuizActivity the state (score, cheat status, etc.)
-
 package com.bignerdranch.android.geoquiz;
 
 import android.app.Activity;

@@ -104,11 +104,25 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             @Override
             public void onClick(View v) {
 
+                int numCheatOn = 0;
+                int quizLength = mQuizItemArray.length;
+
+                // if we've hit the end of the quiz, got to ResultsActivity
                 if (mCurrentIndex == (mQuizItemArray.length - 1)) {
-                    Intent i = new Intent(QuizActivity.this, ResultsActivity.class);
+
+                    Intent intent = new Intent(QuizActivity.this, ResultsActivity.class);
+
                     double QuizPercentage = (mQuizScore / ((double)(mQuizItemArray.length))*100.00);
-                    i.putExtra(ResultsActivity.EXTRA_QUIZ_PERCENT, QuizPercentage);
-                    startActivityForResult(i, ACTIVITY_RESULTS);
+                    intent.putExtra(ResultsActivity.EXTRA_QUIZ_PERCENT, QuizPercentage);
+
+                    intent.putExtra(ResultsActivity.EXTRA_QUIZ_LENGTH, quizLength);
+
+                    for (int i = 0; i < quizLength; i++) {
+                        if (mQuizItemArray[i].getCheatStatus() == true) numCheatOn++;
+                    }
+                    intent.putExtra(ResultsActivity.EXTRA_QUIZ_CHEAT_TOTAL, numCheatOn);
+
+                    startActivityForResult(intent, ACTIVITY_RESULTS);
                 }
                 else {
                     mCurrentIndex = (mCurrentIndex + 1);

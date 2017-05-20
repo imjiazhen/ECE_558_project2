@@ -7,34 +7,48 @@
 
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:padding="12dp"
-              android:textSize="24dp"
+              android:textSize="18dp"
+              android:layout_marginBottom="16dp"
               android:text="@string/text_congratulations" />
 
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:padding="12dp"
-              android:textSize="18dp"
+              android:padding="4dp"
+              android:textSize="14dp"
               android:text="@string/text_you_got" />
 
     <TextView android:id="@+id/text_score"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:padding="12dp"
-              android:textSize="18dp"
+              android:padding="4dp"
+              android:textSize="14dp"
               android:text="@string/text_score" />
 
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:padding="12dp"
-              android:textSize="18dp"
-              android:text="@string/text_answers_correct" />
+              android:padding="4dp"
+              android:textSize="14dp"
+              android:layout_marginBottom="16dp"
+              android:text="@string/text_questions_correct" />
+
+    <TextView android:id="@+id/text_total_questions"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:padding="6dp"
+              android:textSize="12dp"
+              android:text="@string/text_total_questions" />
+
+    <TextView android:id="@+id/text_cheat_total"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:padding="6dp"
+              android:textSize="12dp"
+              android:text="@string/text_cheat_questions" />
 
     <Button android:id="@+id/button_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:text="@string/button_home" />
 
 </LinearLayout>
