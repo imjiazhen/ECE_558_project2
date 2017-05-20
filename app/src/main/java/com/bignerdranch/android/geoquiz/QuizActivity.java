@@ -1,4 +1,3 @@
-// TODO : need to handle landscape changes
 // TODO : prevent questions from being answered again
 // TODO : JSON parser on a single item
 // TODO : Persistent storage
@@ -23,7 +22,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "QuizActivity";
     
     // key-value pairs to stash when activity is interrupted
-    private static final String KEY_INDEX = "index";
+    private static final String KEY_INDEX = "CurrentIndex";
     private static final String KEY_QUIZ_SCORE = "QuizScore";
     private static final String KEY_IS_CHEATER = "IsCheater";
 
@@ -60,58 +59,6 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             new QuizItem("What is the Japanese word for bird?", QuizChoices[4], 'D')
     };
 
-    ////////////////////
-    // updateQuestion //
-    ////////////////////
-
-    private void updateQuestion() {
-
-        QuizItem question = mQuizItemArray[mCurrentIndex];
-        String question_text = question.toString();
-
-        mTextViewQuestion.setText(question_text);
-
-        String choice_A = question.getQuizItemChoices()[0];
-        mRadioButtonA.setText(choice_A);
-
-        String choice_B = question.getQuizItemChoices()[1];
-        mRadioButtonB.setText(choice_B);
-
-        String choice_C = question.getQuizItemChoices()[2];
-        mRadioButtonC.setText(choice_C);
-
-        String choice_D = question.getQuizItemChoices()[3];
-        mRadioButtonD.setText(choice_D);
-
-    } // updateQuestion
-
-    /////////////////
-    // checkAnswer //
-    /////////////////
-
-    private void checkAnswer() {
-
-        boolean answerCorrect =  mQuizItemArray[mCurrentIndex].checkResult();
-        int messageResId = 0;
-
-        if (mIsCheater) {
-            messageResId = R.string.toast_cheat;
-        }
-
-        else {
-            if (answerCorrect) {
-                messageResId = R.string.toast_correct;
-                mQuizScore = mQuizScore + 1;
-            }
-            else {
-                messageResId = R.string.toast_incorect;
-            }
-        }
-
-        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
-
-    } // checkAnswer
-
     //////////////
     // onCreate //
     //////////////
@@ -123,19 +70,12 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
+        restoreState(savedInstanceState);
 
         // wire up the TextView layout object
         // grab Question resource ID and set TextView to that
 
         mTextViewQuestion = (TextView) findViewById(R.id.text_question);
-
-        // restore previous question index if available
-        // also restore quiz score & cheat status
-        if(savedInstanceState != null) {
-            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
-            mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
-            mQuizScore = savedInstanceState.getDouble(KEY_QUIZ_SCORE, 0.0);
-        }
 
         // wire up Radio Button A
         mRadioButtonA = (RadioButton) findViewById(R.id.radio_A);
@@ -198,6 +138,38 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
     } // onCreate
 
+    //////////////////
+    // restoreState //
+    //////////////////
+
+    // restore previous question index if available
+    // also restore quiz score & cheat status
+    public void restoreState(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
+            mQuizScore = savedInstanceState.getDouble(KEY_QUIZ_SCORE, 0.0);
+        }
+    } // restoreState
+
+    /////////////////////////
+    // onSaveInstanceState //
+    /////////////////////////
+
+    // save index of current question
+    // along with score & cheat status
+    @Override
+    public void onSaveInstanceState (Bundle savedInstanceState) {
+
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putBoolean(KEY_IS_CHEATER, mIsCheater);
+        savedInstanceState.putDouble(KEY_QUIZ_SCORE, mQuizScore);
+
+    } // onSaveInstanceState
+
     /////////////////////
     // OnClickListener //
     /////////////////////
@@ -223,6 +195,58 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
     } // onClick -- mRadioButton(A,B,C,D)
 
+    ////////////////////
+    // updateQuestion //
+    ////////////////////
+
+    private void updateQuestion() {
+
+        QuizItem question = mQuizItemArray[mCurrentIndex];
+        String question_text = question.toString();
+
+        mTextViewQuestion.setText(question_text);
+
+        String choice_A = question.getQuizItemChoices()[0];
+        mRadioButtonA.setText(choice_A);
+
+        String choice_B = question.getQuizItemChoices()[1];
+        mRadioButtonB.setText(choice_B);
+
+        String choice_C = question.getQuizItemChoices()[2];
+        mRadioButtonC.setText(choice_C);
+
+        String choice_D = question.getQuizItemChoices()[3];
+        mRadioButtonD.setText(choice_D);
+
+    } // updateQuestion
+
+    /////////////////
+    // checkAnswer //
+    /////////////////
+
+    private void checkAnswer() {
+
+        boolean answerCorrect =  mQuizItemArray[mCurrentIndex].checkResult();
+        int messageResId = 0;
+
+        if (mIsCheater) {
+            messageResId = R.string.toast_cheat;
+        }
+
+        else {
+            if (answerCorrect) {
+                messageResId = R.string.toast_correct;
+                mQuizScore = mQuizScore + 1;
+            }
+            else {
+                messageResId = R.string.toast_incorect;
+            }
+        }
+
+        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+
+    } // checkAnswer
+
     //////////////////////
     // onActivityResult //
     //////////////////////
@@ -241,24 +265,6 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             }
         }
     } // onActivityResult
-
-    /////////////////////////
-    // onSaveInstanceState //
-    /////////////////////////
-
-    // save index of current question
-    // along with score & cheat status
-    @Override
-    public void onSaveInstanceState (Bundle savedInstanceState) {
-
-        super.onSaveInstanceState(savedInstanceState);
-        Log.i(TAG, "onSaveInstanceState");
-
-        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-        savedInstanceState.putBoolean(KEY_IS_CHEATER, mIsCheater);
-        savedInstanceState.putDouble(KEY_QUIZ_SCORE, mQuizScore);
-
-    } // onSaveInstanceState
 
     /////////////
     // onStart //
