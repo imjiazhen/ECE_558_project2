@@ -42,6 +42,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     // Class attributes
     private int     mCurrentIndex = 0;
     private double  mQuizScore = 0.00;
+    private int     mQuizLength;
 
     // temporary QuizItem data
     String[][]  QuizChoices = { {"A: Chien", "B: Pero", "C: Inu", "D: Hund"},
@@ -105,19 +106,18 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             public void onClick(View v) {
 
                 int numCheatOn = 0;
-                int quizLength = mQuizItemArray.length;
 
                 // if we've hit the end of the quiz, got to ResultsActivity
-                if (mCurrentIndex == (mQuizItemArray.length - 1)) {
+                if (mCurrentIndex == (mQuizLength - 1)) {
 
                     Intent intent = new Intent(QuizActivity.this, ResultsActivity.class);
 
-                    double QuizPercentage = (mQuizScore / ((double)(mQuizItemArray.length))*100.00);
+                    double QuizPercentage = (mQuizScore / ((double)(mQuizLength))*100.00);
                     intent.putExtra(ResultsActivity.EXTRA_QUIZ_PERCENT, QuizPercentage);
 
-                    intent.putExtra(ResultsActivity.EXTRA_QUIZ_LENGTH, quizLength);
+                    intent.putExtra(ResultsActivity.EXTRA_QUIZ_LENGTH, mQuizLength);
 
-                    for (int i = 0; i < quizLength; i++) {
+                    for (int i = 0; i < mQuizLength; i++) {
                         if (mQuizItemArray[i].getCheatStatus() == true) numCheatOn++;
                     }
                     intent.putExtra(ResultsActivity.EXTRA_QUIZ_CHEAT_TOTAL, numCheatOn);
@@ -165,6 +165,9 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             mQuizScore = savedInstanceState.getDouble(KEY_QUIZ_SCORE, 0.0);
             mQuizItemArray = (QuizItem[]) savedInstanceState.getSerializable(KEY_QUIZ_ITEM_ARRAY);
         }
+
+        mQuizLength = mQuizItemArray.length;
+
     } // restoreState
 
     /////////////////////////
