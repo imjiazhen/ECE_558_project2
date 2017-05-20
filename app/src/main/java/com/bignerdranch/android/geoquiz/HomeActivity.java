@@ -1,5 +1,4 @@
 // TODO : Create background image & icon
-// TODO : need to handle landscape changes
 // TODO : use Spinner to select a different quiz
 
 package com.bignerdranch.android.geoquiz;

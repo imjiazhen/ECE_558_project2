@@ -1,4 +1,5 @@
-// TODO : need to handle landscape changes
+// TODO : save the score with SharedPreferences capability
+// TODO : display # of question, # cheated on, etc.
 
 package com.bignerdranch.android.geoquiz;
 
@@ -20,7 +21,7 @@ public class ResultsActivity extends Activity {
     private static final String TAG = "ResultsActivity";
 
     // key-value pair to stash when activity is interrupted
-    private static final String KEY_QUIZ_PERCENT = "QuizScore";
+    private static final String KEY_QUIZ_PERCENT = "QuizPercent";
 
     // extra data being passed from QuizActivity --> ResultsActivity
     public static final String EXTRA_QUIZ_PERCENT = "com.bignerdranch.android.geoquiz.quiz_score";
@@ -30,7 +31,7 @@ public class ResultsActivity extends Activity {
     private Button mButtonHome;
     
     // Class attributes
-    private double mQuizScore;
+    private double mQuizPercent;
 
     //////////////
     // onCreate //
@@ -42,9 +43,10 @@ public class ResultsActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_results);
+        restoreState(savedInstanceState);
 
         // get the quiz score from QuizActicity through Intent's extra
-        mQuizScore = getIntent().getDoubleExtra(EXTRA_QUIZ_PERCENT, 0.0);
+        mQuizPercent = getIntent().getDoubleExtra(EXTRA_QUIZ_PERCENT, 0.0);
         
         // grab the TextView object for use by ActivityResults
         // then display score
@@ -65,13 +67,42 @@ public class ResultsActivity extends Activity {
 
     } // onCreate
 
+    //////////////////
+    // restoreState //
+    //////////////////
+
+    // restore previous question index if available
+    // also restore quiz score & cheat status
+    public void restoreState(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            mQuizPercent = savedInstanceState.getDouble(KEY_QUIZ_PERCENT, 0.0);
+        }
+    } // restoreState
+
+    /////////////////////////
+    // onSaveInstanceState //
+    /////////////////////////
+
+    // save index of current question
+    // along with score & cheat status
+    @Override
+    public void onSaveInstanceState (Bundle savedInstanceState) {
+
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+
+        savedInstanceState.putDouble(KEY_QUIZ_PERCENT, mQuizPercent);
+
+    } // onSaveInstanceState
+
     /////////////////////
     // updateTextScore //
     /////////////////////
 
     private void updateTextScore() {
-        String str = "" + mQuizScore + "%";
+        String str = "" + mQuizPercent + "%";
         mTextViewScore.setText(str);
-    }
+
+    } // updateTextScore
 
 } // ResultsActivity

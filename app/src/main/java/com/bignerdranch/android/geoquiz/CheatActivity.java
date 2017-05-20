@@ -21,6 +21,8 @@ public class CheatActivity extends Activity {
     private static final String TAG = "CheatActivity";
 
     // key-value pairs to stash when activity is interrupted
+    private static final String KEY_ANSWER_CHARACTER = "AnswerCharacter";
+    private static final String KEY_IS_ANSWER_SHOWN = "IsAnswerShown";
 
     // extra data being passed from QuizActivity --> CheatActivity
     public static final String EXTRA_ANSWER_CHARACTER = "com.bignerdranch.android.geoquiz.answer_character";
@@ -44,6 +46,7 @@ public class CheatActivity extends Activity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_cheat);
+        restoreState(savedInstanceState);
 
         // get the answer character from QuizActivity through Intent's extra
         // also get whether the answer was shown
@@ -53,7 +56,11 @@ public class CheatActivity extends Activity {
         setAnswerShownResult();
 
         // grab the TextView object for use by CheatActivity
+        // also show the answer text if orientation was changed
         mTextViewAnswer = (TextView) findViewById(R.id.text_answer);
+        if (mIsAnswerShown) {
+            mTextViewAnswer.setText(String.valueOf(mAnswerCharacter));
+        }
 
         // wire up the 'Show Answer' button
         mButtonShowAnswer = (Button) findViewById(R.id.button_answer);
@@ -69,6 +76,36 @@ public class CheatActivity extends Activity {
         }); // onClickListener -- mButtonShowAnswer
 
     } // onCreate
+
+    //////////////////
+    // restoreState //
+    //////////////////
+
+    // restore previous question index if available
+    // also restore quiz score & cheat status
+    public void restoreState(Bundle savedInstanceState) {
+        if(savedInstanceState != null) {
+            mAnswerCharacter = savedInstanceState.getChar(KEY_ANSWER_CHARACTER, 'X');
+            mIsAnswerShown = savedInstanceState.getBoolean(KEY_IS_ANSWER_SHOWN, false);
+        }
+    } // restoreState
+
+    /////////////////////////
+    // onSaveInstanceState //
+    /////////////////////////
+
+    // save index of current question
+    // along with score & cheat status
+    @Override
+    public void onSaveInstanceState (Bundle savedInstanceState) {
+
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+
+        savedInstanceState.putChar(KEY_ANSWER_CHARACTER, 'X');
+        savedInstanceState.putBoolean(KEY_IS_ANSWER_SHOWN, mIsAnswerShown);
+
+    } // onSaveInstanceState
 
     //////////////////////////
     // setAnswerShownResult //
