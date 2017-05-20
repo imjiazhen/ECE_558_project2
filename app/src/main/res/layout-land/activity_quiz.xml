@@ -1,39 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/question_text_view"
+        android:id="@+id/text_question"
+        android:text="@string/lorem_question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="lorem ipsum"
         android:padding="24dp" />
 
+    <!--split the radio group & Next/Cheat buttons-->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center"
         android:orientation="horizontal" >
+
+        <!--layout for the radio group-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="48dp"
+            android:orientation="vertical" >
+
+            <RadioGroup android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                <RadioButton android:id="@+id/radio_A"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:padding="12dp"
+                             android:text="@string/lorem_radio_A" />
+
+                <RadioButton android:id="@+id/radio_B"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:padding="12dp"
+                             android:text="@string/lorem_radio_B" />
+
+                <RadioButton android:id="@+id/radio_C"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:padding="12dp"
+                             android:text="@string/lorem_radio_C" />
+
+                <RadioButton android:id="@+id/radio_D"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:padding="12dp"
+                             android:text="@string/lorem_radio_D" />
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical" >
+        <Button
+            android:id="@+id/button_cheat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_cheat" />
+        <Button
+            android:id="@+id/button_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/button_next"
+            android:drawableRight="@mipmap/arrow_right"
+            android:drawablePadding="4dp" />
+        </LinearLayout>
+
     </LinearLayout>
 
-    <Button
-        android:id="@+id/cheat_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:text="@string/button_cheat" />
-
-    <Button
-        android:id="@+id/next_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:text="@string/button_next"
-        android:drawableRight="@mipmap/arrow_right"
-        android:drawablePadding="4dp" />
-
-</FrameLayout>
+</LinearLayout>

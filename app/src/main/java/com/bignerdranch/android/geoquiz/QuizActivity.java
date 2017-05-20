@@ -235,8 +235,10 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             else mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
         }
         else if (requestCode == ACTIVITY_RESULTS) {
-            setResult(RESULT_OK, null);
-            finish();
+            if (resultCode == RESULT_OK) {
+                setResult(RESULT_OK, null);
+                finish();
+            }
         }
     } // onActivityResult
 

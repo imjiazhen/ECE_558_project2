@@ -1,4 +1,3 @@
-// TODO : Implement basic HomeActivity to start quiz
 // TODO : Create background image & icon
 // TODO : need to handle landscape changes
 // TODO : use Spinner to select a different quiz
