@@ -12,9 +12,11 @@
     <string name="text_select_quiz">Select Quiz:</string>
 
     <string-array name="array_quizzes">
-        <item>lorem ipsum spinner item</item>
+        <item>Animal Language</item>
+        <item>Science Friction</item>
     </string-array>
 
+    <string name="text_prev_score">Previous score:\u0020</string>
     <string name="button_start">Start</string>
 
     <!--                    -->

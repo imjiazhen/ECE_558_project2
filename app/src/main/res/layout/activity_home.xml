@@ -34,4 +34,11 @@
             android:layout_marginTop="24dp"
             android:text="@string/button_start" />
 
+    <TextView android:id="@+id/text_prev_score"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/text_prev_score"
+              android:textSize="12dp"
+              android:layout_marginTop="48dp" />
+
 </LinearLayout>

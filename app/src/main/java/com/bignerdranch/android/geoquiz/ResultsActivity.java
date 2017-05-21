@@ -166,6 +166,10 @@ public class ResultsActivity extends Activity {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() called");
+        SharedPreferences settings = getSharedPreferences(PREF_FILE_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putFloat("PrevQuizScore", mQuizPercent);
+        editor.commit();
     }
 
     //////////////
@@ -186,11 +190,6 @@ public class ResultsActivity extends Activity {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop() called");
-        SharedPreferences settings = getSharedPreferences(PREF_FILE_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putFloat("PreviousQuizScore", mQuizPercent);
-        editor.commit();
-
     }
 
     ///////////////

@@ -25,9 +25,14 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     private static final String KEY_QUIZ_SCORE = "QuizScore";
     private static final String KEY_QUIZ_ITEM_ARRAY = "QuizItemArray";
 
+    // Constants for quiz selection
+    private static final int CODE_ANIMAL_LANGUAGE = 1;
+    private static final int CODE_SCIENCE_FRICTION = 2;
+
     // extra data being passed from QuizActivity --> CheatActivity & ResultsActivity
     private static final int ACTIVITY_CHEAT = 8;
     private static final int ACTIVITY_RESULTS = 9;
+    public static final String EXTRA_QUIZ_SELECTION = "com.bignerdranch.android.geoquiz.quiz_selection";
 
     // GUI elements
     private TextView mTextViewQuestion;
@@ -178,21 +183,33 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     ////////////////
 
     void createQuiz() {
+
         // attempt to create quiz from JSON
         boolean okToRead = isExternalStorageReadable();
+        int quizSelection = getIntent().getIntExtra(EXTRA_QUIZ_SELECTION, 0);
+        String fileName = "";
 
         if (okToRead) {
             JSONReader json_read = new JSONReader();
 
             String baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-            String fileName = "animals.json";
+
+            if (quizSelection == CODE_SCIENCE_FRICTION) fileName = "friction.json";
+            else if (quizSelection == CODE_ANIMAL_LANGUAGE) fileName = "animals.json";
+            else {
+                Log.d(TAG, "Couldn't determine quiz selection!");
+                finish();
+            }
             String fullpath = baseDir + File.separator + fileName;
 
             final File root = new File(fullpath);
             mQuizItemArray = json_read.createQuizFromJSON(root);
             mQuizLength = mQuizItemArray.length;
-        } else {
+        }
+
+        else {
             Log.d(TAG, "Can't read the external storage!");
+            finish();
         }
     } // createQuiz
 
