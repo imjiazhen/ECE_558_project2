@@ -8,9 +8,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.content.Intent;
 
-/**
- * Created by riqbal on 5/12/2017.
- */
 
 public class CheatActivity extends Activity {
 
@@ -45,15 +42,15 @@ public class CheatActivity extends Activity {
         setContentView(R.layout.activity_cheat);
         restoreState(savedInstanceState);
 
-        // get the answer character from QuizActivity through Intent's extra
-
+        // get the answer character from QuizActivity through extra data
         mAnswerCharacter = getIntent().getCharExtra(EXTRA_ANSWER_CHARACTER, 'X');
 
-        // prevent someone from exiting + entering CheatActivity to clear cheat flag
+        // prevent someone from exiting & entering the activity
+        // to clear cheat flag
         setAnswerShownResult();
 
         // grab the TextView object for use by CheatActivity
-        // also show the answer text if orientation was changed
+        // also show the answer text if orientation was disturbed
         mTextViewAnswer = (TextView) findViewById(R.id.text_answer);
         if (mIsAnswerShown) {
             mTextViewAnswer.setText(String.valueOf(mAnswerCharacter));
@@ -62,6 +59,8 @@ public class CheatActivity extends Activity {
         // wire up the 'Show Answer' button
         mButtonShowAnswer = (Button) findViewById(R.id.button_answer);
         mButtonShowAnswer.setOnClickListener(new View.OnClickListener() {
+
+            // Put the answer character in the text and update
             @Override
             public void onClick(View v) {
 
@@ -108,6 +107,8 @@ public class CheatActivity extends Activity {
     // setAnswerShownResult //
     //////////////////////////
 
+    // make sure QuizActivity knows if the Cheat button was used
+    // only bothers updating for 'True' status (false is ignorable)
     private void setAnswerShownResult() {
         if (mIsAnswerShown) {
             Intent data = new Intent();

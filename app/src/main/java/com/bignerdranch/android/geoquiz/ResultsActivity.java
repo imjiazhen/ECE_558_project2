@@ -1,5 +1,3 @@
-// TODO : save the score with SharedPreferences capability
-
 package com.bignerdranch.android.geoquiz;
 
 import android.app.Activity;
@@ -9,21 +7,20 @@ import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.TextView;
-/**
- * Created by riqbal on 5/18/2017.
- */
+
 
 public class ResultsActivity extends Activity {
 
     // tag for debug printing & identification
     private static final String TAG = "ResultsActivity";
 
-    // key-value pair to stash when activity is interrupted
+    // key-value pairs to stash when activity is interrupted
+    // (changing orientation to landscape)
     private static final String KEY_QUIZ_PERCENT = "QuizPercent";
     private static final String KEY_QUIZ_LENGTH = "QuizLength";
     private static final String KEY_QUIZ_CHEAT_TOTAL = "CheatTotal";
 
-    // extra data being passed from QuizActivity --> ResultsActivity
+    // data being passed from QuizActivity --> ResultsActivity
     public static final String EXTRA_QUIZ_PERCENT = "com.bignerdranch.android.geoquiz.quiz_score";
     public static final String EXTRA_QUIZ_LENGTH = "com.bignerdranch.android.geoquiz.quiz_length";
     public static final String EXTRA_QUIZ_CHEAT_TOTAL = "com.bignerdranch.android.geoquiz.cheat_total";
@@ -54,27 +51,29 @@ public class ResultsActivity extends Activity {
         setContentView(R.layout.activity_results);
         restoreState(savedInstanceState);
 
-        // get the quiz score from QuizActicity through Intent's extra
+        // get the quiz score from QuizActivity through extra data
         mQuizPercent = getIntent().getFloatExtra(EXTRA_QUIZ_PERCENT, 0.0f);
         mQuizLength = getIntent().getIntExtra(EXTRA_QUIZ_LENGTH, 1);
         mCheatTotal = getIntent().getIntExtra(EXTRA_QUIZ_CHEAT_TOTAL, 0);
         
-        // grab the TextView object for displaying correct %
-        // then display score
+        // wire up the TextView object to display score
         mTextViewScore = (TextView) findViewById(R.id.text_score);
         updateTextScore();
 
-        // grab the TextView object for display # of questions
+        // wire up the TextView to display number of questions
         mTextViewQuizLength = (TextView) findViewById(R.id.text_total_questions);
         updateQuizLength();
 
-        // grab the TextView object for displaying cheat total
+        // wire up the TextView object to display cheat total
         mTextViewCheatTotal = (TextView) findViewById(R.id.text_cheat_total);
         updateCheatTotal();
 
         // wire up the 'Home' button
         mButtonHome = (Button) findViewById(R.id.button_home);
         mButtonHome.setOnClickListener(new View.OnClickListener() {
+
+            // set result codes to terminate previous activities
+            // keeps back stack from growing unnecessarily
             @Override
             public void onClick (View v) {
                 Intent i = new Intent(ResultsActivity.this, HomeActivity.class);
@@ -93,6 +92,7 @@ public class ResultsActivity extends Activity {
     // restore previous question index if available
     // also restore quiz score & cheat status
     public void restoreState(Bundle savedInstanceState) {
+
         if(savedInstanceState != null) {
             mQuizPercent = savedInstanceState.getFloat(KEY_QUIZ_PERCENT, 0.0f);
             mQuizLength = savedInstanceState.getInt(KEY_QUIZ_LENGTH, 1);
@@ -149,19 +149,11 @@ public class ResultsActivity extends Activity {
     } // updateTextScore
 
     /////////////
-    // onStart //
-    /////////////
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart() called");
-    }
-
-    /////////////
     // onPause //
     /////////////
 
+    // save the quiz results to persistent storage
+    // HomeActivity will display this, too
     @Override
     public void onPause() {
         super.onPause();
@@ -170,36 +162,6 @@ public class ResultsActivity extends Activity {
         SharedPreferences.Editor editor = settings.edit();
         editor.putFloat("PrevQuizScore", mQuizPercent);
         editor.commit();
-    }
-
-    //////////////
-    // onResume //
-    //////////////
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume() called");
-    }
-
-    ////////////
-    // onStop //
-    ////////////
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop() called");
-    }
-
-    ///////////////
-    // onDestroy //
-    ///////////////
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy() called");
     }
 
 } // ResultsActivity

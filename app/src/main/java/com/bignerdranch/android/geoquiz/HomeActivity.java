@@ -1,5 +1,3 @@
-// TODO : use Spinner to select a different quiz
-
 package com.bignerdranch.android.geoquiz;
 
 import android.app.Activity;
@@ -8,9 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-/**
- * Created by riqbal on 5/18/2017.
- */
+
 
 public class HomeActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -33,7 +29,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
     private TextView  mTextViewPrevScore;
 
     // Class attributes
-    private int mQuizSelection = 0;
+    private int mQuizSelection;
 
     //////////////
     // onCreate //
@@ -46,7 +42,7 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_home);
 
-        // grab the Spinner for use by HomeActivity
+        // wire up the Spinner (menu for picking the quiz)
         mSpinnerQuizzes = (Spinner) findViewById(R.id.spinner_quizzes);
         mSpinnerQuizzes.setOnItemSelectedListener(this);
 
@@ -54,6 +50,8 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
         mButtonStart = (Button) findViewById(R.id.button_start);
         mButtonStart.setOnClickListener(new View.OnClickListener() {
 
+            // pass the user's quiz selection to QuizActivity
+            // so it can generate the correct quiz
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.this, QuizActivity.class);
@@ -65,14 +63,8 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
 
         // wire up the PrevScore text
         mTextViewPrevScore = (TextView) findViewById(R.id.text_prev_score);
+        updatePrevScore();
 
-        // restore the previous quiz score
-        SharedPreferences settings = getSharedPreferences(PREF_FILE_NAME, 0);
-        float PrevScore = settings.getFloat("PrevQuizScore", -1.0f);
-        if (PrevScore >= 0.0f) {
-            String str = getResources().getString(R.string.text_prev_score) + PrevScore + "%";
-            mTextViewPrevScore.setText(str);
-        }
     } // onCreate
 
     //////////////////////
@@ -114,5 +106,19 @@ public class HomeActivity extends Activity implements AdapterView.OnItemSelected
     public void onNothingSelected(AdapterView<?> parent) {
 
     } // onNothingSelected
+
+    /////////////////////
+    // updatePrevScore //
+    /////////////////////
+
+    public void updatePrevScore() {
+        // restore the previous quiz score
+        SharedPreferences settings = getSharedPreferences(PREF_FILE_NAME, 0);
+        float PrevScore = settings.getFloat("PrevQuizScore", -1.0f);
+        if (PrevScore >= 0.0f) {
+            String str = getResources().getString(R.string.text_prev_score) + PrevScore + "%";
+            mTextViewPrevScore.setText(str);
+        }
+    } // updatePrevScore
 
 } // HomeActivity

@@ -1,5 +1,3 @@
-// TODO : prevent questions from being answered again
-
 package com.bignerdranch.android.geoquiz;
 
 import android.app.Activity;
@@ -32,6 +30,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     // extra data being passed from QuizActivity --> CheatActivity & ResultsActivity
     private static final int ACTIVITY_CHEAT = 8;
     private static final int ACTIVITY_RESULTS = 9;
+
     public static final String EXTRA_QUIZ_SELECTION = "com.bignerdranch.android.geoquiz.quiz_selection";
 
     // GUI elements
@@ -48,6 +47,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     private float   mQuizScore = 0.0f;
     private int     mQuizLength;
 
+    // Data structure (Model) for the quiz
     private QuizItem[] mQuizItemArray;
 
     //////////////
@@ -58,14 +58,16 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
 
         // start off the app by inflating the view
+        // then create a quiz from scratch
+        // finally, restore previous quiz if you have it
+
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
         createQuiz();
         restoreState(savedInstanceState);
 
-        // wire up the TextView layout object
-        // grab Question resource ID and set TextView to that
+        // wire up the text for question
         mTextViewQuestion = (TextView) findViewById(R.id.text_question);
 
         // wire up Radio Button A
@@ -89,8 +91,6 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         updateQuestion();
 
         // wire up the Next button
-        // with anonymous inner class
-
         mButtonNext = (Button) findViewById(R.id.button_next);
         mButtonNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,23 +98,32 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
                 int numCheatOn = 0;
 
-                // if we've hit the end of the quiz, got to ResultsActivity
+                // if we've hit the end of the quiz, go to ResultsActivity
+                // need to pass a good amount of data over
+                // percentage correct, number of questions, number cheated on...
                 if (mCurrentIndex == (mQuizLength - 1)) {
 
                     Intent intent = new Intent(QuizActivity.this, ResultsActivity.class);
 
+                    // calculate score percentage & send it
                     float QuizPercentage = round((mQuizScore / ((float)(mQuizLength)))*100.0f);
                     intent.putExtra(ResultsActivity.EXTRA_QUIZ_PERCENT, QuizPercentage);
 
+                    // send over quiz length
                     intent.putExtra(ResultsActivity.EXTRA_QUIZ_LENGTH, mQuizLength);
 
+                    // tally up the cheating
                     for (int i = 0; i < mQuizLength; i++) {
                         if (mQuizItemArray[i].getCheatStatus() == true) numCheatOn++;
                     }
-                    intent.putExtra(ResultsActivity.EXTRA_QUIZ_CHEAT_TOTAL, numCheatOn);
 
+                    // send the cheat number
+                    intent.putExtra(ResultsActivity.EXTRA_QUIZ_CHEAT_TOTAL, numCheatOn);
                     startActivityForResult(intent, ACTIVITY_RESULTS);
                 }
+
+                // otherwise, we still have quiz questions
+                // increment & update
                 else {
                     mCurrentIndex = (mCurrentIndex + 1);
                     updateQuestion();
@@ -131,10 +140,15 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void onClick(View v) {
+
+                // send over the correct answer (char)
+                // and start activity for result (need to check result)
+
                 Intent i = new Intent(QuizActivity.this, CheatActivity.class);
                 char correctAnswer = mQuizItemArray[mCurrentIndex].getQuizItemAnswer();
                 i.putExtra(CheatActivity.EXTRA_ANSWER_CHARACTER, correctAnswer);
                 startActivityForResult(i, ACTIVITY_CHEAT);
+
             } // onClick
 
         }); // onClickListener -- mButtonCheat
@@ -166,6 +180,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
     // save index of current question
     // along with score & cheat status
+
     @Override
     public void onSaveInstanceState (Bundle savedInstanceState) {
 
@@ -185,6 +200,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     void createQuiz() {
 
         // attempt to create quiz from JSON
+        // we will pass file over to JSONReader item to handle heavy-lifting
         boolean okToRead = isExternalStorageReadable();
         int quizSelection = getIntent().getIntExtra(EXTRA_QUIZ_SELECTION, 0);
         String fileName = "";
@@ -194,6 +210,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
             String baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
 
+            // pick which JSON file to load based on HomeActivity quiz selection
             if (quizSelection == CODE_SCIENCE_FRICTION) fileName = "friction.json";
             else if (quizSelection == CODE_ANIMAL_LANGUAGE) fileName = "animals.json";
             else {
@@ -203,6 +220,8 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             String fullpath = baseDir + File.separator + fileName;
 
             final File root = new File(fullpath);
+
+            // now that JSON file determined, pass file to JSONReader
             mQuizItemArray = json_read.createQuizFromJSON(root);
             mQuizLength = mQuizItemArray.length;
         }
@@ -211,12 +230,15 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             Log.d(TAG, "Can't read the external storage!");
             finish();
         }
+
     } // createQuiz
 
     /////////////////////
     // OnClickListener //
     /////////////////////
 
+    // listener for the radio buttons
+    // QuizItem object will collect & set the responses
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -244,6 +266,8 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
     private void updateQuestion() {
 
+        // method for updating the question statement
+        // and radio button labels
         QuizItem question = mQuizItemArray[mCurrentIndex];
         String question_text = question.toString();
 
@@ -266,6 +290,10 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     /////////////////
     // checkAnswer //
     /////////////////
+
+    // check on QuizItem object if user's cheated on this
+    // if so, display punish toast
+    // otherwise, check for correctness
 
     private void checkAnswer() {
 
@@ -296,6 +324,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     //////////////////////
 
     // check if cheat answer was shown or not
+    // by looking at result code from CheatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -316,61 +345,11 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         }
     } // onActivityResult
 
-    /////////////
-    // onStart //
-    /////////////
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart() called");
-    }
-
-    /////////////
-    // onPause //
-    /////////////
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause() called");
-    }
-
-    //////////////
-    // onResume //
-    //////////////
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume() called");
-    }
-
-    ////////////
-    // onStop //
-    ////////////
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop() called");
-    }
-
-    ///////////////
-    // onDestroy //
-    ///////////////
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy() called");
-    }
-
     ///////////////////////////////
     // isExternalStorageReadable //
     ///////////////////////////////
 
-    /* Checks if external storage is available to at least read */
+    // Checks if external storage is available to at least read
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state) ||
