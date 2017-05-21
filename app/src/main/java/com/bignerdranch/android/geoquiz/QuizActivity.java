@@ -1,8 +1,4 @@
 // TODO : prevent questions from being answered again
-// TODO : JSON parser on a single item
-// TODO : Persistent storage
-// TODO : Combine JSON parser & persistent storage
-// TODO : Merge JSON parser & persistent storage into Quiz
 
 package com.bignerdranch.android.geoquiz;
 
@@ -16,6 +12,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.content.Intent;
 import java.io.File;
+
+import static java.lang.Math.round;
 
 public class QuizActivity extends Activity implements View.OnClickListener {
 
@@ -42,7 +40,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
     // Class attributes
     private int     mCurrentIndex = 0;
-    private double  mQuizScore = 0.00;
+    private float   mQuizScore = 0.0f;
     private int     mQuizLength;
 
     private QuizItem[] mQuizItemArray;
@@ -58,25 +56,8 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
+        createQuiz();
         restoreState(savedInstanceState);
-
-        // attempt to create quiz from JSON
-        boolean okToRead = isExternalStorageReadable();
-
-        if (okToRead) {
-            JSONReader json_read = new JSONReader();
-
-            String baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-            String fileName = "animals.json";
-            String fullpath = baseDir + File.separator + fileName;
-
-            final File root = new File(fullpath);
-            mQuizItemArray = json_read.createQuizFromJSON(root);
-            mQuizLength = mQuizItemArray.length;
-        }
-        else {
-            Log.d(TAG, "Can't read the external storage!");
-        }
 
         // wire up the TextView layout object
         // grab Question resource ID and set TextView to that
@@ -117,7 +98,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
                     Intent intent = new Intent(QuizActivity.this, ResultsActivity.class);
 
-                    double QuizPercentage = (mQuizScore / ((double)(mQuizLength))*100.00);
+                    float QuizPercentage = round((mQuizScore / ((float)(mQuizLength)))*100.0f);
                     intent.putExtra(ResultsActivity.EXTRA_QUIZ_PERCENT, QuizPercentage);
 
                     intent.putExtra(ResultsActivity.EXTRA_QUIZ_LENGTH, mQuizLength);
@@ -167,7 +148,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
 
         if(savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
-            mQuizScore = savedInstanceState.getDouble(KEY_QUIZ_SCORE, 0.0);
+            mQuizScore = savedInstanceState.getFloat(KEY_QUIZ_SCORE, 0.0f);
             mQuizItemArray = (QuizItem[]) savedInstanceState.getSerializable(KEY_QUIZ_ITEM_ARRAY);
             mQuizLength = mQuizItemArray.length;
         }
@@ -187,10 +168,33 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         Log.i(TAG, "onSaveInstanceState");
 
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-        savedInstanceState.putDouble(KEY_QUIZ_SCORE, mQuizScore);
+        savedInstanceState.putFloat(KEY_QUIZ_SCORE, mQuizScore);
         savedInstanceState.putSerializable(KEY_QUIZ_ITEM_ARRAY, mQuizItemArray);
 
     } // onSaveInstanceState
+
+    ////////////////
+    // createQuiz //
+    ////////////////
+
+    void createQuiz() {
+        // attempt to create quiz from JSON
+        boolean okToRead = isExternalStorageReadable();
+
+        if (okToRead) {
+            JSONReader json_read = new JSONReader();
+
+            String baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+            String fileName = "animals.json";
+            String fullpath = baseDir + File.separator + fileName;
+
+            final File root = new File(fullpath);
+            mQuizItemArray = json_read.createQuizFromJSON(root);
+            mQuizLength = mQuizItemArray.length;
+        } else {
+            Log.d(TAG, "Can't read the external storage!");
+        }
+    } // createQuiz
 
     /////////////////////
     // OnClickListener //
@@ -345,6 +349,10 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         Log.d(TAG, "onDestroy() called");
     }
 
+    ///////////////////////////////
+    // isExternalStorageReadable //
+    ///////////////////////////////
+
     /* Checks if external storage is available to at least read */
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
@@ -353,6 +361,6 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             return true;
         }
         return false;
-    }
+    } // isExternalStorageReadable
 
 } // QuizActivity

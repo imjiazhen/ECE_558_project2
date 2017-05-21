@@ -3,13 +3,12 @@
 package com.bignerdranch.android.geoquiz;
 
 import android.app.Activity;
+import android.content.*;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.TextView;
-import android.content.Intent;
-
 /**
  * Created by riqbal on 5/18/2017.
  */
@@ -29,6 +28,9 @@ public class ResultsActivity extends Activity {
     public static final String EXTRA_QUIZ_LENGTH = "com.bignerdranch.android.geoquiz.quiz_length";
     public static final String EXTRA_QUIZ_CHEAT_TOTAL = "com.bignerdranch.android.geoquiz.cheat_total";
 
+    // preferences file for persistent storage
+    public static final String PREF_FILE_NAME = "QuizPrefsFile";
+
     // GUI elements
     private TextView mTextViewScore;
     private TextView mTextViewQuizLength;
@@ -36,7 +38,7 @@ public class ResultsActivity extends Activity {
     private Button mButtonHome;
     
     // Class attributes
-    private double mQuizPercent;
+    private float mQuizPercent;
     private int mQuizLength;
     private int mCheatTotal;
 
@@ -53,7 +55,7 @@ public class ResultsActivity extends Activity {
         restoreState(savedInstanceState);
 
         // get the quiz score from QuizActicity through Intent's extra
-        mQuizPercent = getIntent().getDoubleExtra(EXTRA_QUIZ_PERCENT, 0.0);
+        mQuizPercent = getIntent().getFloatExtra(EXTRA_QUIZ_PERCENT, 0.0f);
         mQuizLength = getIntent().getIntExtra(EXTRA_QUIZ_LENGTH, 1);
         mCheatTotal = getIntent().getIntExtra(EXTRA_QUIZ_CHEAT_TOTAL, 0);
         
@@ -92,7 +94,7 @@ public class ResultsActivity extends Activity {
     // also restore quiz score & cheat status
     public void restoreState(Bundle savedInstanceState) {
         if(savedInstanceState != null) {
-            mQuizPercent = savedInstanceState.getDouble(KEY_QUIZ_PERCENT, 0.0);
+            mQuizPercent = savedInstanceState.getFloat(KEY_QUIZ_PERCENT, 0.0f);
             mQuizLength = savedInstanceState.getInt(KEY_QUIZ_LENGTH, 1);
             mCheatTotal = savedInstanceState.getInt(KEY_QUIZ_CHEAT_TOTAL, 0);
         }
@@ -110,7 +112,7 @@ public class ResultsActivity extends Activity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
 
-        savedInstanceState.putDouble(KEY_QUIZ_PERCENT, mQuizPercent);
+        savedInstanceState.putFloat(KEY_QUIZ_PERCENT, mQuizPercent);
         savedInstanceState.putInt(KEY_QUIZ_LENGTH, mQuizLength);
         savedInstanceState.putInt(KEY_QUIZ_CHEAT_TOTAL, mCheatTotal);
 
@@ -145,5 +147,60 @@ public class ResultsActivity extends Activity {
         mTextViewCheatTotal.setText(str);
 
     } // updateTextScore
+
+    /////////////
+    // onStart //
+    /////////////
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    /////////////
+    // onPause //
+    /////////////
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    //////////////
+    // onResume //
+    //////////////
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    ////////////
+    // onStop //
+    ////////////
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+        SharedPreferences settings = getSharedPreferences(PREF_FILE_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putFloat("PreviousQuizScore", mQuizPercent);
+        editor.commit();
+
+    }
+
+    ///////////////
+    // onDestroy //
+    ///////////////
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
+    }
 
 } // ResultsActivity
