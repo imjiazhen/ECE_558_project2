@@ -7,7 +7,7 @@
 package com.bignerdranch.android.geoquiz;
 
 import android.app.Activity;
-import android.os.Bundle;
+import android.os.*;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.content.Intent;
+import java.io.File;
 
 public class QuizActivity extends Activity implements View.OnClickListener {
 
@@ -44,20 +45,7 @@ public class QuizActivity extends Activity implements View.OnClickListener {
     private double  mQuizScore = 0.00;
     private int     mQuizLength;
 
-    // temporary QuizItem data
-    String[][]  QuizChoices = { {"A: Chien", "B: Pero", "C: Inu", "D: Hund"},
-                                {"A: Chat", "B: Gato", "C: Neko", "D: Catze"},
-                                {"A: Poisson", "B: Sakana", "C: Fisch", "D: Peces"},
-                                {"A: Conejo", "B: Hase", "C: Lapin", "D: Usagi"},
-                                {"A: Vogel", "B: Pajaro", "C: Oiseau", "D: Tori"} };
-
-    private QuizItem[] mQuizItemArray = new QuizItem[]{
-            new QuizItem("What is the Japanese word for dog?", QuizChoices[0], 'C'),
-            new QuizItem("What is the Spanish word for cat?", QuizChoices[1], 'B'),
-            new QuizItem("What is the French word for fish?", QuizChoices[2], 'A'),
-            new QuizItem("What is the German word for rabbit?", QuizChoices[3], 'B'),
-            new QuizItem("What is the Japanese word for bird?", QuizChoices[4], 'D')
-    };
+    private QuizItem[] mQuizItemArray;
 
     //////////////
     // onCreate //
@@ -72,9 +60,26 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_quiz);
         restoreState(savedInstanceState);
 
+        // attempt to create quiz from JSON
+        boolean okToRead = isExternalStorageReadable();
+
+        if (okToRead) {
+            JSONReader json_read = new JSONReader();
+
+            String baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+            String fileName = "animals.json";
+            String fullpath = baseDir + File.separator + fileName;
+
+            final File root = new File(fullpath);
+            mQuizItemArray = json_read.createQuizFromJSON(root);
+            mQuizLength = mQuizItemArray.length;
+        }
+        else {
+            Log.d(TAG, "Can't read the external storage!");
+        }
+
         // wire up the TextView layout object
         // grab Question resource ID and set TextView to that
-
         mTextViewQuestion = (TextView) findViewById(R.id.text_question);
 
         // wire up Radio Button A
@@ -164,9 +169,8 @@ public class QuizActivity extends Activity implements View.OnClickListener {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
             mQuizScore = savedInstanceState.getDouble(KEY_QUIZ_SCORE, 0.0);
             mQuizItemArray = (QuizItem[]) savedInstanceState.getSerializable(KEY_QUIZ_ITEM_ARRAY);
+            mQuizLength = mQuizItemArray.length;
         }
-
-        mQuizLength = mQuizItemArray.length;
 
     } // restoreState
 
@@ -340,4 +344,15 @@ public class QuizActivity extends Activity implements View.OnClickListener {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
     }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
 } // QuizActivity

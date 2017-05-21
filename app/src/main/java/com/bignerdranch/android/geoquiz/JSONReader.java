@@ -14,19 +14,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.File;
 
 public class JSONReader {
 
-    public static void main (String args[]) {
+    public QuizItem[] createQuizFromJSON (File file) {
 
         JSONParser parser = new JSONParser();
+        QuizItem[] QuizItemArray = null;
 
         try {
-            Object arr = parser.parse(new FileReader("C:\\Users\\riqbal\\Desktop\\test.json"));
+            Object arr = parser.parse(new FileReader(file));
             JSONArray json_file = (JSONArray) arr;
 
-            QuizItem[] QuizItemArray = parseQuizItemArray(json_file);
-            System.out.println(QuizItemArray[3]);
+            QuizItemArray = parseQuizItemArray(json_file);
 
         } catch (FileNotFoundException e) {
             System.out.println("File not found exception!");
@@ -39,6 +40,7 @@ public class JSONReader {
             e.printStackTrace();
         }
 
+        return QuizItemArray;
     } // main
 
     static QuizItem[] parseQuizItemArray(JSONArray json_arr) {
